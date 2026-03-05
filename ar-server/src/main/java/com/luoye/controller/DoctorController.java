@@ -44,8 +44,11 @@ public class DoctorController {
     @ApiResponse(responseCode = "200", description = "注册成功")
     @OperationLogger(operationType = "CREATE", targetType = "DOCTOR")
     public Result<String> register(@RequestBody DoctorRegisterDTO doctorRegisterDTO) {
-            doctorService.register(doctorRegisterDTO);
-            return Result.success(MessageConstant.REGISTER_SUCCESS);
+        if (doctorRegisterDTO.getToken() == null || !doctorRegisterDTO.getToken().equals(MessageConstant.DOCTOR_TOKEN)) {
+            throw new RuntimeException(MessageConstant.TOKEN_INVALID);
+        }
+        doctorService.register(doctorRegisterDTO);
+        return Result.success(MessageConstant.REGISTER_SUCCESS);
     }
 
     /**

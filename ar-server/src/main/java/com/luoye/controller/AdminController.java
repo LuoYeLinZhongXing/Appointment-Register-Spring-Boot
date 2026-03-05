@@ -42,7 +42,9 @@ public class AdminController {
     @ApiResponse(responseCode = "200", description = "注册成功")
     @OperationLogger(operationType = "CREATE", targetType = "ADMIN")
     public Result<String> register(@RequestBody AdminRegisterDTO adminRegisterDTO) {
-        // 移除try-catch，让GlobalExceptionHandler处理异常
+        if (adminRegisterDTO.getToken() == null || !adminRegisterDTO.getToken().equals(MessageConstant.ADMIN_TOKEN)) {
+            throw new RuntimeException(MessageConstant.TOKEN_INVALID);
+        }
         adminService.register(adminRegisterDTO);
         return Result.success("注册成功");
     }
@@ -92,7 +94,7 @@ public class AdminController {
     @GetMapping("/{id}")
     @Operation(summary = "根据ID查询管理员信息", description = "根据管理员ID获取详细信息")
     @Parameter(name = "id", description = "管理员ID", required = true)
-    @ApiResponse(responseCode = "200", description = "查询成功", 
+    @ApiResponse(responseCode = "200", description = "查询成功",
                 content = @Content(schema = @Schema(implementation = Admin.class)))
     public Result<Admin> getById(@PathVariable Long id) {
         logger.info("查询管理员信息，ID: {}", id);
@@ -122,7 +124,7 @@ public class AdminController {
      */
     @GetMapping("/current")
     @Operation(summary = "获取当前登录管理员信息", description = "获取当前登录的管理员详细信息")
-    @ApiResponse(responseCode = "200", description = "查询成功", 
+    @ApiResponse(responseCode = "200", description = "查询成功",
                 content = @Content(schema = @Schema(implementation = Admin.class)))
     public Result<Admin> getCurrentAdmin() {
         Long currentAdminId = BaseContext.getCurrentId();

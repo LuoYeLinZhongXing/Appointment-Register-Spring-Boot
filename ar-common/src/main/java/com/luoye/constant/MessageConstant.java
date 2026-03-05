@@ -180,4 +180,9 @@ public class MessageConstant {
     public static final String ORDER_REGISTER_SUCCESS = "挂号成功，已生成订单";
     public static final String ORDER_PAY_SUCCESS = "支付成功";
     public static final String ORDER_PAY_FAILURE = "支付失败，请稍后重试";
+
+    // 令牌验证相关
+    public static final String TOKEN_INVALID = "令牌验证未通过，无法注册";
+    public static final String ADMIN_TOKEN = "lylzx-admin";
+    public static final String DOCTOR_TOKEN = "lylzx-doctor";
 }

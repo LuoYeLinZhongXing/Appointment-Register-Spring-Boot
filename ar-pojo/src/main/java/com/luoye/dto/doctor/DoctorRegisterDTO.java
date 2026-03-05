@@ -26,7 +26,7 @@ public class DoctorRegisterDTO {
      */
     private String card;
     /**
-     * 医生职位: 0.普通医生 1.科室主任
+     * 医生职位：0.普通医生 1.科室主任
      */
     private Integer post;
     /**
@@ -39,4 +39,9 @@ public class DoctorRegisterDTO {
      */
     @TableField(value = "dept_id")
     private Long deptId;
+
+    /**
+     * 注册令牌
+     */
+    private String token;
 }

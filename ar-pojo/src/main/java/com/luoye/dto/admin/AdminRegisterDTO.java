@@ -18,7 +18,7 @@ public class AdminRegisterDTO {
     private String password;
 
     /**
-     * 性别 (0-女, 1-男)
+     * 性别 (0-女，1-男)
      */
     private Integer gender;
 
@@ -31,4 +31,9 @@ public class AdminRegisterDTO {
      * 手机号码
      */
     private String phone;
+
+    /**
+     * 注册令牌
+     */
+    private String token;
 }
