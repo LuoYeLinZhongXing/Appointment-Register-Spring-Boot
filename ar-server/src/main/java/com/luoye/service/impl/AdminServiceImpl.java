@@ -14,6 +14,7 @@ import com.luoye.service.AdminService;
 import com.luoye.util.JwtUtil;
 import com.luoye.util.RedisUtil;
 import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -31,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-@Log
+@Slf4j
 @EnableCaching
 public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements AdminService {
 
@@ -64,7 +65,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
 
         // 验证密码长度
         if (adminRegisterDTO.getPassword().length() < 6 || adminRegisterDTO.getPassword().length() > 20) {
-            throw new BaseException("密码长度必须在6-20位之间");
+            throw new BaseException("密码长度必须在 6-20 位之间");
         }
 
         // 判断手机号是否已注册
@@ -72,19 +73,30 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         if(count > 0) {
             throw new BaseException(MessageConstant.PHONE_ERROR);
         }
+
+        log.info("开始插入管理员数据，手机号：{}", adminRegisterDTO.getPhone());
+
         //创建管理员实体
         Admin admin = new Admin();
         BeanUtils.copyProperties(adminRegisterDTO, admin);
         admin.setPassword(DigestUtils.md5DigestAsHex(admin.getPassword().getBytes()));
         admin.setCreateTime(LocalDateTime.now());
         admin.setUpdateTime(LocalDateTime.now());
+
+        log.info("管理员实体创建完成，姓名：{}, 手机号：{}, 性别：{}",
+                admin.getName(), admin.getPhone(), admin.getGender());
+
         //插入数据库
         int result = adminMapper.insert(admin);
-        if(result <= 1){
+        
+        log.info("管理员插入结果：{}, 生成的 ID: {}", result, admin.getId());
+        
+        if(result != 1){
+            log.error("管理员插入失败，result={}, admin={}", result, admin);
             throw new BaseException(MessageConstant.ADMIN_REGISTER_FAILED);
         }
 
-        log.info("管理员注册成功，手机号:"+ adminRegisterDTO.getPhone());
+        log.info("管理员注册成功，手机号："+ adminRegisterDTO.getPhone());
     }
 
     /**
